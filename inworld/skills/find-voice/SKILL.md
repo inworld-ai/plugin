@@ -104,9 +104,13 @@ This makes two clips per voice with the same model, text and delivery setting
 (default CREATIVE for both). It does not publish voices or edit configuration.
 
 Read each clip's `reasoningInstruction` and `requestDurationMs` and present the
-native players with the condition labels. Workspace-default is **not guaranteed
-Reasoning off**: the tool preserves the server default rather than sending an OFF enum. The current public API documents an unspecified request as not running Reasoning; label the comparison default/requested and report the response evidence. An absent instruction
-can mean abstention, fallback or no enablement; do not claim Reasoning ran.
+native players with the condition labels. The tool's workspace-default condition
+leaves Reasoning unset; it does not send an OFF enum. The current public API
+documents an unspecified request as not running Reasoning. Label the comparison
+default/requested and report the response evidence rather than assuming an
+undocumented workspace opt-in or claiming a verified off/on experiment. An absent
+instruction alone does not distinguish no execution from execution that produced
+no instruction; do not claim Reasoning ran from the request alone.
 Request duration is complete HTTP synthesis time, not first audio or playback
 latency. Keep raw usage; do not infer a surcharge. Let the user judge delivery.
 

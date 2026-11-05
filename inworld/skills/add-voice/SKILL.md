@@ -73,7 +73,9 @@ Match existing patterns — async/await, error handling, logging style.
 
 Common shapes:
 
-- **REST endpoint**: Add a route that takes `{ text }`, returns `audio/mpeg`.
+- **REST endpoint**: Add a route that takes `{ text }`, explicitly requests MP3,
+  and returns `audio/mpeg`. If supporting other encodings, match the response
+  content type to the selected encoding.
 - **React component**: Add a button that fetches the route and plays via
   `new Audio(URL.createObjectURL(blob))`. If the page already has an audio
   player, hook into that instead.

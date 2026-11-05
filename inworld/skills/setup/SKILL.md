@@ -127,7 +127,11 @@ export async function synthesize(opts: SynthesizeOptions): Promise<Buffer> {
 ```
 
 For Next.js, also create `app/api/tts/route.ts` (or `pages/api/tts.ts`) that wraps
-`synthesize` and returns the completed MP3 buffer as `audio/mpeg`. This route is buffered, not incremental synthesis; use add-streaming-tts when playback must start earlier.
+`synthesize`, explicitly sets `audioEncoding: "MP3"`, and returns the completed
+buffer as `audio/mpeg`. If the route supports other encodings, return the matching
+content type instead; never forward a caller-selected encoding while keeping an
+MP3 response header. This route is buffered, not incremental synthesis; use
+add-streaming-tts when playback must start earlier.
 
 ### Python
 
@@ -201,7 +205,7 @@ Additional text features to mention in the helper module's docstring:
 - **Custom pronunciation**: replace one word with its English IPA in slashes, e.g.
   `a honeymoon in /kriːt/`, for proper nouns TTS would otherwise mispronounce
 - **Verbatim**: `<verbatim>AHAA7771Z</verbatim>` spells out codes and IDs
-- **Long text**: 2,000 character limit per call. For longer text, split at sentence
+- **Long text**: 2,000 UTF-16 code units per synchronous call (JavaScript `text.length`). For longer text, split at sentence
   boundaries and use container-aware audio merging, or use [async synthesis](https://docs.inworld.ai/tts/synthesize-speech). Async limits depend on the account: On-Demand jobs are capped at 10,000 characters; other supported accounts can submit up to 100,000. Do not assume upload acceptance or raw MP3 byte concatenation proves a correctly finalized recording.
 
 For a real speaker clone, follow [custom-voice](../custom-voice/SKILL.md), which distinguishes instant and professional cloning, Portal/API/tool limits, consent, sample preparation and resumable training. For a new designed voice, use [find-voice](../find-voice/SKILL.md) to audition candidates before publishing. Do not duplicate those limits in this setup helper or publish a voice merely to preview it.
