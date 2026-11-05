@@ -1,0 +1,4 @@
+interface:
+  display_name: "Create a Custom Voice"
+  short_description: "Prepare consenting speaker samples for custom voice cloning"
+  default_prompt: "Prepare recordings from a consenting speaker for voice cloning, isolate their audio if needed, and keep a separate sample to test the result."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Prepare Text for Speech"
+  short_description: "Make IDs, numbers and formatted text speak clearly"
+  default_prompt: "Check the text this app sends to Inworld TTS and fix what will sound wrong."

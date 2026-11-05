@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate a Video"
+  short_description: "Create videos, track progress and save the results"
+  default_prompt: "Use $generate-video to turn my brief into a video and save the finished MP4."

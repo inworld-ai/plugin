@@ -1,0 +1,62 @@
+{
+  "name": "inworld",
+  "version": "1.0.0",
+  "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
+  "author": {
+    "name": "Inworld AI",
+    "url": "https://inworld.ai"
+  },
+  "homepage": "https://docs.inworld.ai",
+  "repository": "https://github.com/inworld-ai/plugin",
+  "license": "MIT",
+  "keywords": [
+    "tts",
+    "stt",
+    "realtime",
+    "router",
+    "speech",
+    "voice",
+    "audio",
+    "inworld"
+  ],
+  "skills": "./skills/",
+  "mcpServers": {
+    "inworld": {
+      "command": "node",
+      "args": [
+        "./launcher.mjs"
+      ],
+      "cwd": ".",
+      "env": {
+        "INWORLD_CLIENT_SOURCE": "codex-plugin"
+      },
+      "env_vars": [
+        "INWORLD_API_KEY"
+      ]
+    }
+  },
+  "interface": {
+    "displayName": "Inworld AI",
+    "shortDescription": "Voice, transcription and AI inference",
+    "longDescription": "Build and test voice and AI experiences inside your coding agent. Describe the voice you want, audition it on your own script, and integrate natural speech into your app. Transcribe recordings or live audio, tune pronunciation and alphanumeric delivery, or prepare a consenting speaker's recordings for voice cloning.\n\nEvaluate Inworld inference on your app's real requests, comparing latency, cost and quality before choosing a model. Configure model routing and fallbacks, or generate images and videos through the same Inworld connection.",
+    "developerName": "Inworld AI",
+    "category": "Developer Tools",
+    "capabilities": [
+      "Interactive",
+      "Read",
+      "Write"
+    ],
+    "websiteURL": "https://inworld.ai",
+    "privacyPolicyURL": "https://inworld.ai/privacy",
+    "termsOfServiceURL": "https://inworld.ai/terms",
+    "brandColor": "#000000",
+    "composerIcon": "./assets/icon.png",
+    "logo": "./assets/icon.png",
+    "defaultPrompt": [
+      "Find a warm British voice and let me hear it on my app's welcome message.",
+      "Benchmark Inworld against the inference provider in this project using representative requests.",
+      "Transcribe this recording with speaker labels and check names, dates and numbers."
+    ]
+  },
+  "requires_local_executor": true
+}

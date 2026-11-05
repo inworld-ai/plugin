@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Structured Decisions"
+  short_description: "Get typed choices, scores and yes/no answers with probabilities"
+  default_prompt: "Find the places this app parses yes/no or labels from an LLM and use Inworld Decisions instead."

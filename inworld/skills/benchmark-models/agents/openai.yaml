@@ -1,0 +1,4 @@
+interface:
+  display_name: "Benchmark AI Models"
+  short_description: "Compare latency, cost and quality on your app’s real requests"
+  default_prompt: "Compare our current inference provider with Inworld on representative app requests before migrating."

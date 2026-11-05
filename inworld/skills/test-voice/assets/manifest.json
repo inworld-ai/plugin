@@ -1,0 +1,100 @@
+{
+  "schema_version": 1,
+  "suite_id": "synthetic-support-starter-v1",
+  "notice": "Synthetic scaffolding only. Replace with sanitized utterances from the developer app before claiming app coverage.",
+  "allowed_config_changes": [
+    "dictionary_version"
+  ],
+  "metrics": {
+    "first_audio_ms": {
+      "unit": "ms",
+      "definition": "Monotonic request-start to first playable audio at the app adapter, including connection setup; one observation per case.",
+      "direction": "lower",
+      "max_regression": 100,
+      "required": false
+    }
+  },
+  "cases": [
+    {
+      "id": "greeting",
+      "text": "Welcome back, Maya. How can I help?",
+      "language": "en-US",
+      "split": "tuning",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "Warm, clear greeting; Maya as MY-uh (confirm with app owner).",
+      "checks": [
+        "name",
+        "delivery"
+      ]
+    },
+    {
+      "id": "amount",
+      "text": "Your refund is $1,024.05, not $1,240.50.",
+      "language": "en-US",
+      "split": "held_out",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "One thousand twenty-four dollars and five cents; not one thousand two hundred forty dollars and fifty cents.",
+      "checks": [
+        "amount",
+        "correction"
+      ]
+    },
+    {
+      "id": "reference",
+      "text": "Your reference is <verbatim>AB0071Z</verbatim>.",
+      "language": "en-US",
+      "split": "held_out",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "A B zero zero seven one Z; preserve both leading zeros.",
+      "checks": [
+        "exact_id"
+      ]
+    },
+    {
+      "id": "phone",
+      "text": "Call +1 202 555 0148, extension 09.",
+      "language": "en-US",
+      "split": "tuning",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "Speak each phone digit intelligibly, including extension zero nine; do not invent digits.",
+      "checks": [
+        "digits"
+      ]
+    },
+    {
+      "id": "language",
+      "text": "<lang lang=\"en-US\">In Spanish, the word</lang> <lang lang=\"es-ES\">llama</lang> <lang lang=\"en-US\">means flame.</lang>",
+      "language": "en-US+es-ES",
+      "split": "held_out",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "English framing, Spanish pronunciation of llama, return to English; do not speak markup.",
+      "checks": [
+        "language_switch"
+      ]
+    },
+    {
+      "id": "pause",
+      "text": "Please wait.<break time=\"500ms\" />Your request is now complete.",
+      "language": "en-US",
+      "split": "held_out",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "Audible pause between sentences; complete final word; no spoken break tag.",
+      "checks": [
+        "pause",
+        "complete_tail"
+      ]
+    },
+    {
+      "id": "recovery",
+      "text": "I could not save that change. Please try again.",
+      "language": "en-US",
+      "split": "held_out",
+      "source": "synthetic example; replace with app fixture pointer",
+      "expected": "Clear calm recovery message; both sentences complete, no missing negation.",
+      "checks": [
+        "meaning",
+        "delivery"
+      ]
+    }
+  ]
+}

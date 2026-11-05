@@ -1,0 +1,16 @@
+{
+  "name": "inworld-plugin-maintenance",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "vendor": "./inworld/scripts/vendor.sh",
+    "package:plugin": "node inworld/scripts/package-plugin.mjs",
+    "check:versions": "node inworld/scripts/sync-versions.mjs --check",
+    "sync:versions": "node inworld/scripts/sync-versions.mjs --write",
+    "check:distribution": "node inworld/scripts/check-distribution.mjs",
+    "check:docs": "node inworld/scripts/check-docs-drift.mjs --check"
+  },
+  "engines": {
+    "node": ">=20"
+  }
+}

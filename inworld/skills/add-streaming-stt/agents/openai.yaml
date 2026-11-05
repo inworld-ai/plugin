@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build Streaming Speech Recognition"
+  short_description: "Add live transcription, turn detection and final transcripts"
+  default_prompt: "Use $add-streaming-stt to add live speech recognition with appropriate features and reliable final transcript delivery."

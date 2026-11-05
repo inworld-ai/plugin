@@ -1,0 +1,14 @@
+{
+  "mcpServers": {
+    "inworld": {
+      "command": "node",
+      "args": [
+        "${CLAUDE_PLUGIN_ROOT}/launcher.mjs"
+      ],
+      "env": {
+        "INWORLD_API_KEY": "${user_config.api_key}",
+        "INWORLD_CLIENT_SOURCE": "claude-code-plugin"
+      }
+    }
+  }
+}

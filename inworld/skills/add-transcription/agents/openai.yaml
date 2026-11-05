@@ -1,0 +1,4 @@
+interface:
+  display_name: "Add Transcription"
+  short_description: "Transcribe recordings with speaker labels and timestamps"
+  default_prompt: "Use $add-transcription to transcribe this app’s recordings with appropriate vocabulary, timing and speaker features."

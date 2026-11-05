@@ -1,0 +1,4 @@
+interface:
+  display_name: "Build with Inworld Inference"
+  short_description: "Connect AI models through one API, with routing and fallbacks"
+  default_prompt: "Connect this app to Inworld inference with suitable models, routing and fallbacks."

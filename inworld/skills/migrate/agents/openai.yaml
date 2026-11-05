@@ -1,0 +1,4 @@
+interface:
+  display_name: "Switch Speech to Inworld"
+  short_description: "Move text-to-speech calls with tests and a rollback path"
+  default_prompt: "Find this app's current TTS provider and migrate it to Inworld behind a switch."

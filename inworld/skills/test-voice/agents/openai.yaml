@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Voice"
+  short_description: "Check app voice regressions with saved evidence"
+  default_prompt: "Use $test-voice to prepare an app voice regression set and compare saved results offline."

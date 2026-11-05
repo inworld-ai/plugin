@@ -1,0 +1,4 @@
+interface:
+  display_name: "Test Conversation"
+  short_description: "Test voice turns and lifecycle from app event logs"
+  default_prompt: "Use $test-conversation to test my voice app offline for interruptions, tool calls, reconnects, and cleanup using its existing fixtures and event logs."

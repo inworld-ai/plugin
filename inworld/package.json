@@ -1,0 +1,36 @@
+{
+  "name": "inworld-agent-plugin",
+  "version": "1.0.0",
+  "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
+  "type": "module",
+  "bin": {
+    "inworld-agent-plugin": "./launcher.mjs"
+  },
+  "scripts": {
+    "start": "node launcher.mjs"
+  },
+  "files": [
+    "build",
+    "launcher.mjs",
+    "scripts",
+    "skills",
+    "voice-lab",
+    ".claude-plugin",
+    ".codex-plugin",
+    ".mcp.json",
+    "assets",
+    "logo.png",
+    "vendor-source.json",
+    "docs-sources.json",
+    "runtime",
+    "listing.json",
+    "!**/__pycache__/**",
+    "!**/*.pyc",
+    "!**/*.pyo",
+    "LICENSE"
+  ],
+  "license": "MIT",
+  "engines": {
+    "node": ">=20"
+  }
+}

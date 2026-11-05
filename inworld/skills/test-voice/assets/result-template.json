@@ -1,0 +1,129 @@
+{
+  "schema_version": 1,
+  "run_id": "synthetic-not-rendered",
+  "recorded_at": "2026-10-17T00:00:00Z",
+  "provenance": "simulated",
+  "manifest_sha256": "fbe0a6eb85c78ca3805a68a866702138378d3ae71faf58ce87a1ab599656736c",
+  "config": {
+    "model": "inworld-tts-2",
+    "voice": "replace-with-app-voice-id",
+    "language": "per-case; default en-US",
+    "normalization": "ON",
+    "dictionary_version": "none",
+    "app_version": "replace-with-app-revision",
+    "request_options": {},
+    "audio_format": "replace-with-app-format"
+  },
+  "cases": [
+    {
+      "id": "greeting",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "name": {
+          "status": "unknown"
+        },
+        "delivery": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "amount",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "amount": {
+          "status": "unknown"
+        },
+        "correction": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "reference",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "exact_id": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "phone",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "digits": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "language",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "language_switch": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "pause",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "pause": {
+          "status": "unknown"
+        },
+        "complete_tail": {
+          "status": "unknown"
+        }
+      }
+    },
+    {
+      "id": "recovery",
+      "status": "skipped",
+      "attempts": 0,
+      "reason": "Template only: no render or listening performed.",
+      "metrics": {
+        "first_audio_ms": null
+      },
+      "reviews": {
+        "meaning": {
+          "status": "unknown"
+        },
+        "delivery": {
+          "status": "unknown"
+        }
+      }
+    }
+  ]
+}

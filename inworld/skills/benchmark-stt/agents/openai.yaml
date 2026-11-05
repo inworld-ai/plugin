@@ -1,0 +1,4 @@
+interface:
+  display_name: "Evaluate Speech Recognition"
+  short_description: "Test transcription accuracy, key terms, turns and latency"
+  default_prompt: "Use $benchmark-stt to evaluate speech recognition on this app's real audio and report accuracy, latency, failures and cost."

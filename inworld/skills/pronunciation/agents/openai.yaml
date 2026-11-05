@@ -1,0 +1,4 @@
+interface:
+  display_name: "Tune Pronunciation"
+  short_description: "Make names and specialist terms sound right with dictionaries"
+  default_prompt: "Prepare a pronunciation dictionary for my app and a separate set of lines to test it."

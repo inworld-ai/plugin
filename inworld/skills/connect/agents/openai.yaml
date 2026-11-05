@@ -1,0 +1,4 @@
+interface:
+  display_name: "Connect to Inworld"
+  short_description: "Create an account or connect your existing Inworld API key"
+  default_prompt: "Connect this agent to my Inworld account."

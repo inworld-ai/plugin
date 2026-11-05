@@ -1,0 +1,4 @@
+interface:
+  display_name: "Generate an Image"
+  short_description: "Create and edit images with Inworld media models"
+  default_prompt: "Use $generate-image to create an image from my brief and save the result."

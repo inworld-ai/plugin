@@ -1,0 +1,31 @@
+{
+  "name": "inworld",
+  "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
+  "owner": {
+    "name": "Inworld AI",
+    "url": "https://inworld.ai"
+  },
+  "plugins": [
+    {
+      "name": "inworld",
+      "source": "./inworld",
+      "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
+      "version": "1.0.0",
+      "category": "ai",
+      "keywords": [
+        "tts",
+        "stt",
+        "realtime",
+        "router",
+        "llm",
+        "speech",
+        "voice",
+        "audio",
+        "inworld",
+        "tts-2"
+      ],
+      "homepage": "https://docs.inworld.ai",
+      "license": "MIT"
+    }
+  ]
+}

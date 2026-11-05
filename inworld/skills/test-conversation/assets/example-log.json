@@ -1,0 +1,278 @@
+{
+  "schema_version": 1,
+  "provenance": "synthetic",
+  "adapter": {
+    "case": "case",
+    "session": "session",
+    "direction": "direction",
+    "event": "event",
+    "at_ms": "at_ms",
+    "clock": "clock"
+  },
+  "cases": {
+    "interrupt": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "playback"
+      ]
+    },
+    "pause": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "fixture"
+      ]
+    },
+    "noise": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "fixture"
+      ]
+    },
+    "tool": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "tools"
+      ]
+    },
+    "reconnect": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "transport",
+        "playback"
+      ]
+    },
+    "finish": {
+      "complete": true,
+      "observed": [
+        "wire",
+        "transport",
+        "playback"
+      ]
+    }
+  },
+  "events": [
+    {
+      "case": "interrupt",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "input_audio_buffer.speech_started",
+        "item_id": "user-1"
+      }
+    },
+    {
+      "case": "interrupt",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "playback.invalidated",
+        "response_id": "r-old"
+      }
+    },
+    {
+      "case": "interrupt",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "response.output_audio.delta",
+        "response_id": "r-old"
+      }
+    },
+    {
+      "case": "interrupt",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "playback.dropped",
+        "response_id": "r-old"
+      }
+    },
+    {
+      "case": "interrupt",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "response.done",
+        "response": {
+          "id": "r-old",
+          "status": "cancelled"
+        }
+      }
+    },
+    {
+      "case": "pause",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "fixture.started",
+        "fixture_id": "pause-local"
+      }
+    },
+    {
+      "case": "pause",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "fixture.ended",
+        "fixture_id": "pause-local"
+      }
+    },
+    {
+      "case": "noise",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "fixture.started",
+        "fixture_id": "noise-local"
+      }
+    },
+    {
+      "case": "noise",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "fixture.ended",
+        "fixture_id": "noise-local"
+      }
+    },
+    {
+      "case": "tool",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "response.function_call_arguments.done",
+        "call_id": "c1",
+        "name": "lookup",
+        "arguments": "{}"
+      }
+    },
+    {
+      "case": "tool",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "tool.stub_result",
+        "call_id": "c1"
+      }
+    },
+    {
+      "case": "tool",
+      "session": "connection-1",
+      "direction": "client",
+      "event": {
+        "type": "conversation.item.create",
+        "item": {
+          "type": "function_call_output",
+          "call_id": "c1",
+          "output": "{\"ok\":true}"
+        }
+      }
+    },
+    {
+      "case": "tool",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "response.created",
+        "response": {
+          "id": "r-followup"
+        }
+      }
+    },
+    {
+      "case": "tool",
+      "session": "connection-1",
+      "direction": "server",
+      "event": {
+        "type": "response.done",
+        "response": {
+          "id": "r-followup",
+          "status": "completed"
+        }
+      }
+    },
+    {
+      "case": "reconnect",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "transport.closed"
+      }
+    },
+    {
+      "case": "reconnect",
+      "session": "connection-1",
+      "direction": "app",
+      "event": {
+        "type": "playback.invalidated",
+        "response_id": "old-epoch"
+      }
+    },
+    {
+      "case": "reconnect",
+      "session": "connection-2",
+      "direction": "app",
+      "event": {
+        "type": "transport.opened"
+      }
+    },
+    {
+      "case": "reconnect",
+      "session": "connection-2",
+      "direction": "client",
+      "event": {
+        "type": "session.update"
+      }
+    },
+    {
+      "case": "reconnect",
+      "session": "connection-2",
+      "direction": "server",
+      "event": {
+        "type": "session.updated"
+      }
+    },
+    {
+      "case": "finish",
+      "session": "connection-2",
+      "direction": "server",
+      "event": {
+        "type": "response.done",
+        "response": {
+          "id": "r-final",
+          "status": "completed"
+        }
+      }
+    },
+    {
+      "case": "finish",
+      "session": "connection-2",
+      "direction": "app",
+      "event": {
+        "type": "playback.drained",
+        "response_id": "r-final"
+      }
+    },
+    {
+      "case": "finish",
+      "session": "connection-2",
+      "direction": "app",
+      "event": {
+        "type": "capture.stopped"
+      }
+    },
+    {
+      "case": "finish",
+      "session": "connection-2",
+      "direction": "app",
+      "event": {
+        "type": "transport.closed"
+      }
+    }
+  ]
+}

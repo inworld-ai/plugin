@@ -1,0 +1,4 @@
+interface:
+  display_name: "Realtime Voice Agent"
+  short_description: "Build a voice agent that listens and responds with speech"
+  default_prompt: "Build a realtime voice agent with Inworld in this app."

@@ -1,0 +1,4 @@
+interface:
+  display_name: "Check Inworld Setup"
+  short_description: "Inspect local configuration and find integration problems"
+  default_prompt: "Check this app's Inworld configuration locally and explain any problems that need an API or audio test."

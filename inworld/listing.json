@@ -1,0 +1,43 @@
+{
+  "displayName": "Inworld AI",
+  "summary": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
+  "shortDescription": "Voice, transcription and AI inference",
+  "longDescription": "Build and test voice and AI experiences inside your coding agent. Describe the voice you want, audition it on your own script, and integrate natural speech into your app. Transcribe recordings or live audio, tune pronunciation and alphanumeric delivery, or prepare a consenting speaker's recordings for voice cloning.\n\nEvaluate Inworld inference on your app's real requests, comparing latency, cost and quality before choosing a model. Configure model routing and fallbacks, or generate images and videos through the same Inworld connection.",
+  "apiKeyHelp": "Create or copy your API key at platform.inworld.ai/api-keys.",
+  "defaultPrompts": [
+    "Find a warm British voice and let me hear it on my app's welcome message.",
+    "Benchmark Inworld against the inference provider in this project using representative requests.",
+    "Transcribe this recording with speaker labels and check names, dates and numbers."
+  ],
+  "capabilities": [
+    {
+      "title": "Find the right voice",
+      "description": "Describe the character, accent and delivery, then audition voices on the lines your app will actually say."
+    },
+    {
+      "title": "Build natural speech",
+      "description": "Add TTS and streaming audio, direct delivery with TTS Reasoning, and handle names, specialist terms and alphanumeric IDs."
+    },
+    {
+      "title": "Understand recorded and live audio",
+      "description": "Add transcription, speaker labels, vocabulary hints and turn detection; evaluate accuracy on your own audio."
+    },
+    {
+      "title": "Create a custom voice",
+      "description": "Prepare recordings from a consenting speaker, isolate speaker samples and work through instant or professional voice cloning."
+    },
+    {
+      "title": "Choose and test inference",
+      "description": "Benchmark real app requests, review latency, cost and quality, then configure models, routing and fallbacks."
+    },
+    {
+      "title": "Generate images and video",
+      "description": "Create or edit images and manage video generation jobs with Inworld's media models."
+    }
+  ],
+  "skillsOnlyPrompts": [
+    "Add voice discovery and auditions to this app using a warm British voice and my welcome message.",
+    "Prepare a benchmark against this app's existing inference provider using representative requests.",
+    "Add recording transcription with speaker labels, names, dates and numbers to this app."
+  ]
+}

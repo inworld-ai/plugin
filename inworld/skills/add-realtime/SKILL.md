@@ -1,0 +1,413 @@
+---
+name: add-realtime
+description: "Build two-way voice agents with STT, LLM and TTS. Use for realtime conversations, phone agents, interruptions and tool calls."
+argument-hint: "[browser|server|twilio]"
+---
+
+# Add Realtime Skill
+
+Build or integrate a realtime voice agent, conversational assistant, talking avatar, phone agent or speech-to-speech experience using Inworld. Configure the LLM, STT and TTS loop, microphone/playback, interruptions and tool calls over WebSocket or WebRTC in the app. Use for end-to-end two-way voice; for adding streaming speech output to an existing LLM loop use add-streaming-tts.
+
+Before calling tools, follow [installed tool availability](../connect/references/tool-availability.md).
+Use the single Inworld connection and its actual schemas. If the host has
+disabled a tool or loaded an older package, follow the availability guidance;
+missing tools do not imply a missing API key.
+
+
+Inworld's Realtime API runs a low-latency speech-to-speech loop:
+microphone → STT → LLM (router) → TTS-2 → speakers. It follows the OpenAI
+Realtime protocol, so most messages will look familiar.
+
+The plugin's MCP server is for batch TTS/STT. Realtime audio cannot live in
+the agent's MCP process — it must live in the user's app. This skill writes that code.
+
+## Migrating from OpenAI Realtime?
+
+If the user already has working OpenAI Realtime code (`wss://api.openai.com/v1/realtime`),
+this is a near-drop-in swap:
+
+| What | OpenAI | Inworld |
+|---|---|---|
+| WebSocket URL | `wss://api.openai.com/v1/realtime?model=...` | `wss://api.inworld.ai/api/v1/realtime/session?key=<sid>&protocol=realtime` |
+| WebRTC POST  | `https://api.openai.com/v1/realtime` | `https://api.inworld.ai/v1/realtime/calls` |
+| Server auth   | `Authorization: Bearer sk-...` | `Authorization: Basic <inworld-api-key>` |
+| Browser auth  | Ephemeral token | Backend-minted session token (`Authorization: Bearer <token>`) |
+| `session.update` model | OpenAI model ids | Any provider model (`openai/...`, `anthropic/...`) or an Inworld Router (`inworld/<name>`) |
+| TTS voice     | OpenAI voices (alloy, echo, ...) | Inworld TTS-2 voices (run `list_voices`) |
+| Message schema| Same | Same |
+
+If the app already uses OpenAI Realtime, preserve its existing event handling and
+verify differences against the installed client and current Inworld docs. Use
+[test-conversation](../test-conversation/SKILL.md) to check turn handling,
+interruptions, tool calls and reconnects before switching traffic. Protocol
+similarity does not establish equivalent conversation behavior.
+
+## Resolve the brain before connecting
+
+Use the live catalog via `list_llm_models`/`resolve_models` before the first LLM
+request or Realtime connection. For a new fast voice agent, shortlist compatible
+Inworld-hosted text models and compare relevant candidates using `benchmark-models`;
+check tool support, conversation quality and measured latency. Do not guess model
+IDs or silently fall back to a remembered OpenAI default. If catalog access is
+unavailable, leave `LLM_MODEL` unresolved and explain the connection blocker.
+For a saved router, use the exact name returned by `list_routers`. Verify the
+selected model/router supports the chosen Realtime route in current docs.
+
+## Step 1 — Pick the transport
+
+From $ARGUMENTS or by asking the user:
+
+| Transport | When | URL |
+|---|---|---|
+| `browser` | Web app with mic — uses WebRTC | `POST https://api.inworld.ai/v1/realtime/calls` |
+| `server`  | Node/Python backend, telephony, or game server — uses WebSocket | `wss://api.inworld.ai/api/v1/realtime/session?key=<sid>&protocol=realtime` |
+| `twilio`  | Phone calls | WebSocket + Twilio Media Streams (G.711 µ-law) |
+
+If unsure, ask. The code paths are different.
+
+## Step 2 — Detect the stack & set up auth
+
+Browser clients **must not** ship the raw Inworld API key. Browser Realtime
+sessions authenticate with a **session token**: a short-lived JWT your backend
+mints from the API key through Inworld's signed mint endpoint
+(docs: https://docs.inworld.ai/portal/session-tokens). Realtime refuses
+Inworld's one-time tokens, so don't reuse the STT/TTS token flow here.
+
+1. **Backend token endpoint** — an authenticated, rate-limited route that
+   mints a session token and returns only `token` and `expirationTime`, with
+   `Cache-Control: no-store`.
+2. **Browser** — sends `Authorization: Bearer <token>` with the WebRTC offer.
+
+A session token carries all of its parent key's permissions until it expires
+(a few hours), so recommend minting from a **Realtime-only API key** created in
+the Inworld portal.
+
+For server-only or Twilio integrations, use the Basic API key directly — no token.
+
+Add `INWORLD_API_KEY=` to `.env.example` if not already present.
+
+## Step 3 — Scaffold the server piece
+
+### Node (Express / Next.js route handler)
+
+`src/server/inworld-session-token.ts`. This is Inworld's documented signing
+scheme; don't change it:
+
+```ts
+// Mint an Inworld session token for a browser Realtime client.
+// The request is signed with the API key's secret; the secret itself is never sent.
+import { createHmac, randomBytes } from "node:crypto";
+
+export async function mintSessionToken(): Promise<{ token: string; expirationTime: string }> {
+  const credential = process.env.INWORLD_API_KEY;
+  if (!credential) throw new Error("INWORLD_API_KEY is not set");
+  // The copied Base64 key decodes to "<keyId>:<secret>". Decode it only for this signed mint.
+  const parts = Buffer.from(credential, "base64").toString("utf8").split(":");
+  if (parts.length !== 2 || !parts[0] || !parts[1]) {
+    throw new Error("Expected the copied Base64 key ID and secret");
+  }
+  const [keyId, secret] = parts;
+  const host = "api.inworld.ai";
+  const method = "ai.inworld.engine.v1.SessionTokens/GenerateSessionToken";
+  const datetime = new Date().toISOString().replace(/[-:T]/g, "").slice(0, 14);
+  const nonce = randomBytes(16).toString("hex");
+  let signature = Buffer.from("IW1" + secret, "utf8");
+  for (const part of [datetime, host, method, nonce, "iw1_request"]) {
+    signature = createHmac("sha256", signature).update(part).digest();
+  }
+  const authorization =
+    `IW1-HMAC-SHA256 ApiKey=${keyId},DateTime=${datetime},Nonce=${nonce},` +
+    `Signature=${signature.toString("hex")}`;
+  const res = await fetch(`https://${host}/v1/sessionTokens/token:generate`, {
+    method: "POST",
+    headers: { Authorization: authorization, "Content-Type": "application/json" },
+    body: JSON.stringify({ api_key: keyId }),
+    signal: AbortSignal.timeout(10_000),
+  });
+  if (!res.ok) throw new Error(`Session token mint failed (${res.status})`);
+  const { token, expirationTime } = await res.json();
+  return { token, expirationTime };
+}
+```
+
+`src/server/realtime-route.ts` (Express style):
+
+```ts
+import { Router } from "express";
+import { mintSessionToken } from "./inworld-session-token";
+
+export const realtimeRouter = Router();
+realtimeRouter.post("/realtime/token", async (req, res) => {
+  res.set("Cache-Control", "no-store");
+  // assume req.user is set by your auth middleware; add CSRF + per-user rate limits
+  const userId = (req as any).user?.id;
+  if (!userId) return res.status(401).end();
+  try {
+      res.json(await mintSessionToken());
+    } catch {
+      res.status(502).end(); // never log the key or the token
+    }
+  });
+  ```
+
+  ### Python (FastAPI)
+
+  ```python
+  import base64, hashlib, hmac, os, secrets
+  from datetime import datetime, timezone
+
+  import httpx
+  from fastapi import APIRouter, Depends, HTTPException, Response
+
+  router = APIRouter()
+
+  def mint_session_token() -> dict:
+      """Mint an Inworld session token (Inworld's documented IW1-HMAC-SHA256 signing)."""
+      credential = os.environ["INWORLD_API_KEY"]
+      parts = base64.b64decode(credential).decode("utf-8").split(":")
+      if len(parts) != 2 or not all(parts):
+          raise RuntimeError("Expected the copied Base64 key ID and secret")
+      key_id, secret = parts
+      host = "api.inworld.ai"
+      method = "ai.inworld.engine.v1.SessionTokens/GenerateSessionToken"
+      dt = datetime.now(timezone.utc).strftime("%Y%m%d%H%M%S")
+      nonce = secrets.token_hex(16)
+      signature = ("IW1" + secret).encode("utf-8")
+      for part in (dt, host, method, nonce, "iw1_request"):
+          signature = hmac.new(signature, part.encode("utf-8"), hashlib.sha256).digest()
+      authorization = (
+          f"IW1-HMAC-SHA256 ApiKey={key_id},DateTime={dt},Nonce={nonce},"
+          f"Signature={signature.hex()}"
+      )
+      r = httpx.post(
+          f"https://{host}/v1/sessionTokens/token:generate",
+          headers={"Authorization": authorization},
+          json={"api_key": key_id},
+          timeout=10,
+      )
+      r.raise_for_status()
+      data = r.json()
+      return {"token": data["token"], "expirationTime": data["expirationTime"]}
+
+  @router.post("/realtime/token")
+  def issue_token(response: Response, user=Depends(get_current_user)):
+      response.headers["Cache-Control"] = "no-store"
+      try:
+          return mint_session_token()
+      except Exception:
+          raise HTTPException(status_code=502)  # never log the key or the token
+  ```
+
+  ## Step 4 — Scaffold the WebSocket client (server transport)
+
+  `src/realtime/client.mjs`:
+
+Copy [assets/client.mjs](assets/client.mjs) into `src/realtime/` and install `ws`.
+`InworldRealtimeClient` requires `apiKey`, `systemPrompt` and a catalog-resolved `llmModel`; optional `voice`,
+`ttsModel`, `audioFormat` (`"pcm24"` or `"twilio"`),
+`connectTimeoutMs`, `onAudioDelta(base64)`, `onTranscript(text, role)`,
+`onSpeechStarted()`, `onClose()` and `onError(error)`.
+Its public `ready` promise resolves after `session.updated` acknowledges the
+configuration. `sendAudio(base64)`, `sendText(text)` and `cancel()` return promises;
+`close()` releases the connection and rejects pending readiness.
+
+```js
+import { InworldRealtimeClient } from "./realtime/client.mjs";
+const client = new InworldRealtimeClient({
+  llmModel: process.env.LLM_MODEL, // exact catalog-resolved model or existing router
+  apiKey: process.env.INWORLD_API_KEY, systemPrompt: "You are a helpful assistant.",
+  onAudioDelta: audio => sink.enqueue(audio),
+  onSpeechStarted: () => sink.clear(),
+  onError: error => console.error(error.message),
+});
+await client.ready;
+await client.sendText("Hello");
+// On stop: client.close();
+```
+
+  Copy this client into the app, install `ws`, and **await `client.ready`** before
+  attaching capture. `sendAudio` and `sendText` return promises that wait for session
+  configuration; handle their rejections. `close()` rejects pending readiness and
+  prevents subsequent sends. Default audio is mono PCM16 at 24 kHz. Use 60–100 ms
+  chunks and preserve the actual wire encoding.
+
+### Twilio bridge (server transport)
+
+Use `audioFormat: "twilio"` to set **both** input and output to `audio/pcmu`
+(fixed 8 kHz), following [Inworld's audio format contract](https://docs.inworld.ai/realtime/usage/using-realtime-models).
+This bridge consumes an already accepted, authenticated Twilio Media Stream socket;
+validate Twilio's signature at the upgrade route in your app. Keep the API key on
+this server. Return TwiML with `<Connect><Stream url="wss://your-host/media-stream"/></Connect>`
+from your voice webhook as shown in the [official integration](https://docs.inworld.ai/realtime/usage/twilio).
+
+Copy [assets/twilio-bridge.mjs](assets/twilio-bridge.mjs) alongside the client.
+Call `bridgeTwilio(authenticatedTwilioSocket, realtimeOptions)` after accepting
+the Media Stream upgrade. It returns `{ client, ready, stop }`. It validates
+the start-event codec, forwards base64 μ-law in both directions and clears the
+Twilio playback queue on caller speech. Stop, error, readiness timeout and either
+socket disconnect release both sockets.
+
+Await the bridge's `ready` promise. Up to one second of μ-law audio is buffered
+during setup; exceeding that limit fails the bridge and releases both sockets. Speech-start clears Twilio's
+queued playback; `interrupt_response: true` handles generation cancellation. Old
+response audio is suppressed locally. This scaffold has mock contract coverage;
+a real phone call must still verify codec negotiation, barge-in and disconnects.
+
+  ## Step 5 — Scaffold the browser client (browser transport)
+
+  `src/realtime/browser-client.ts`:
+
+  ```ts
+  // Uses WebRTC. Browser fetches a short-lived token from your backend, then
+  // POSTs an SDP offer to Inworld and gets back an answer.
+  export interface BrowserRealtimeOptions {
+    tokenEndpoint: string;            // your backend route, e.g. "/api/realtime/token" → { token, expirationTime }
+    voice?: string;
+    ttsModel?: string;
+    llmModel: string;
+    systemPrompt: string;
+    onTranscript?: (text: string, role: "user" | "assistant") => void;
+  }
+
+  export async function startBrowserRealtime(opts: BrowserRealtimeOptions) {
+    if (!opts.llmModel?.trim()) throw new Error("Resolve LLM_MODEL before connecting");
+    const tokenRes = await fetch(opts.tokenEndpoint, {
+      method: "POST",
+      credentials: "same-origin",
+      cache: "no-store",
+    });
+    if (!tokenRes.ok) throw new Error(`Failed to get an Inworld session token (${tokenRes.status})`);
+    const { token } = await tokenRes.json();
+
+    // Inworld's TURN/STUN servers help calls connect through strict NATs.
+    let iceServers: RTCIceServer[] = [];
+    try {
+      const r = await fetch("https://api.inworld.ai/v1/realtime/ice-servers", {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (r.ok) iceServers = (await r.json()).ice_servers ?? [];
+    } catch {}
+
+    const pc = new RTCPeerConnection({ iceServers });
+    let mic: MediaStream | undefined;
+    const cleanup = () => {
+      pc.close();
+      mic?.getTracks().forEach((t) => t.stop());
+    };
+
+    try {
+    mic = await navigator.mediaDevices.getUserMedia({ audio: true });
+    mic.getTracks().forEach((t) => pc.addTrack(t, mic!));
+
+    const audioEl = new Audio();
+    audioEl.autoplay = true;
+    pc.ontrack = (e) => (audioEl.srcObject = e.streams[0]);
+
+    const dc = pc.createDataChannel("oai-events");
+    dc.onmessage = (e) => {
+      const event = JSON.parse(e.data);
+      if (event.type === "response.output_audio_transcript.delta") {
+        opts.onTranscript?.(event.delta, "assistant");
+      } else if (event.type === "conversation.item.input_audio_transcription.completed") {
+        opts.onTranscript?.(event.transcript, "user");
+      }
+    };
+    dc.onopen = () => {
+      dc.send(JSON.stringify({
+        type: "session.update",
+        session: {
+          type: "realtime",
+          model: opts.llmModel,
+          instructions: opts.systemPrompt,
+          output_modalities: ["audio", "text"],
+          audio: {
+            output: {
+              voice: opts.voice ?? "Clive",
+              model: opts.ttsModel ?? "inworld-tts-2",
+            },
+          },
+        },
+      }));
+    };
+
+    await pc.setLocalDescription(await pc.createOffer());
+
+    // The offer is sent once (no trickle ICE), so wait for candidate gathering to
+    // finish; otherwise the SDP can miss the STUN/TURN candidates users behind NAT need.
+    await new Promise<void>((resolve) => {
+      if (pc.iceGatheringState === "complete") return resolve();
+      const done = () => {
+        if (pc.iceGatheringState !== "complete") return;
+        pc.removeEventListener("icegatheringstatechange", done);
+        resolve();
+      };
+      pc.addEventListener("icegatheringstatechange", done);
+      setTimeout(resolve, 3000); // don't hang if gathering stalls; send what we have
+    });
+
+    const answerRes = await fetch("https://api.inworld.ai/v1/realtime/calls", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`,
+        "Content-Type": "application/sdp",
+      },
+      body: pc.localDescription!.sdp,
+    });
+    if (!answerRes.ok) throw new Error(`Inworld rejected the WebRTC offer (${answerRes.status})`);
+    await pc.setRemoteDescription({ type: "answer", sdp: await answerRes.text() });
+  } catch (err) {
+    cleanup(); // release the mic and peer connection on any setup failure
+    throw err;
+  }
+
+  return { stop: cleanup };
+}
+```
+
+## Step 6 — Pick a voice, an LLM, and a system prompt
+
+Ask the user three things:
+
+1. **Agent purpose** (customer support, game NPC, language tutor, etc.) — this
+   shapes the system prompt.
+2. **Voice** — suggest 3–5 from the Inworld voice library that fit.
+3. **Brain (LLM)** — two options:
+   - **Single model** — select an exact supported ID from the live catalog, using
+     the app's tool/context requirements and the measured shortlist above.
+   - **Inworld Router** — call `list_routers` to show what the user has configured
+     in the Inworld portal. A router is referenced as `inworld/<router-name>` and
+     gives you traffic-splitting, automatic fallback, and A/B experimentation
+     across underlying models without changing the client code.
+
+If they pick Router, plug `inworld/<router-name>` into the `model` field of
+`session.update` instead of a provider model. The rest of the scaffold is
+identical — the Router is transparent to the client.
+
+If they're unsure, default to a single model. Mention that switching to a
+Router later is a one-line change in `session.update`.
+
+Write a system prompt that is concise and gives the agent a clear role, a
+short list of dos/don'ts, and an expected conversational register. Drop it
+into the scaffolded client.
+
+## Step 7 — Hook into UI / triggers
+
+For browser: add a single "Start conversation" button that calls
+`startBrowserRealtime` and a "Stop" button that calls the returned `stop()`.
+
+For server: wire `InworldRealtimeClient` into wherever inbound audio arrives
+(WebSocket from your own clients, Twilio Media Stream, Discord bot, etc.).
+Pipe `onAudioDelta` chunks back to the audio sink.
+
+## Step 8 — Verify
+
+Tell the user the exact command to start the app and the URL/route to hit.
+Make sure they:
+1. Have set `INWORLD_API_KEY` in `.env`.
+2. Have granted microphone permission (browser).
+3. Can see transcripts logging in the console.
+
+If something fails, the most common issues are:
+- Auth (wrong key, expired token)
+- Audio format mismatch (must be PCM16 @ 24 kHz mono base64 unless you set µ-law/A-law)
+- Forgetting `response.create` after sending text input
