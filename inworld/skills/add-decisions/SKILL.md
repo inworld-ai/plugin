@@ -17,7 +17,7 @@ missing tools do not imply a missing API key.
 The Decisions API (`POST https://api.inworld.ai/alpha/decisions`, preview,
 model `typesafe/jev-latest`) answers named, typed questions about a `state` with
 probabilities. The model judges; the user's code decides what to do with the
-numbers. Only input tokens are billed. It's a preview: the path and shape may
+numbers. The documented `typesafe/jev-latest` example bills input tokens; check current catalog rates for the selected decision model. It's a preview: the path and shape may
 change, so keep the call in one module.
 
 ## Step 1 — Find the judgment calls
@@ -29,6 +29,8 @@ classifiers that miss cases. Each is a candidate when the answer is bounded and
 needs judgment rather than computation.
 
 Leave alone anything that needs generated text, exact computation or a lookup.
+
+Before choosing a model, check the current [Decisions catalog guidance](https://docs.inworld.ai/router/decisions). The model below is a documented example, not a universal default; a chat model with JSON output is not interchangeable with a decision model.
 
 ## Step 2 — Pick the question type
 

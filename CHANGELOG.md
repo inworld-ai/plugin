@@ -1,5 +1,13 @@
 # Changelog
 
+## 1.0.1 — 2026-11-05
+
+- Simplified installation around native Git/plugin flows, the skills installer and local host adapters.
+- Consolidated install/update guidance and linked packaged READMEs to the canonical guides.
+- Corrected speech limits, cancellation, pronunciation-dictionary pagination and reasoning guidance.
+
+The bundled `@inworld/cli` remains pinned at 1.5.0.
+
 ## 1.0.0 — 2026-11-05
 
 First public release of the shared Inworld plugin.

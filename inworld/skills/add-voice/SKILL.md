@@ -8,8 +8,7 @@ argument-hint: "[where to add voice, e.g. 'chat responses' or 'error toasts']"
 
 Add Inworld TTS-2 voice output to a specific feature in the user's codebase. Browses available voices, plays samples (including with steering applied), and wires the chosen voice into the right route, component, or function. Use when the user wants voice output in one specific place — not a full project setup.
 
-Wire Inworld TTS-2 into a specific feature. Assumes the user has run `/inworld:setup`
-at least once (i.e. a client helper exists). If not, run `setup` first.
+Reuse the project's existing speech client where it fits. Use [setup](../setup/SKILL.md) only when the needed helper is missing; an earlier invocation of that skill is not a prerequisite.
 
 ## Step 1 — Locate the target
 

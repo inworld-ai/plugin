@@ -62,7 +62,7 @@ core catalog/synthesis tools can still provide a limited fallback:
    rather than retrying. Use the native audio presentation below.
 3. Narrow the shortlist with feedback. With no `compare_voices` tool, compare the
    saved core clips or synthesize the specifically requested revision; do not
-   call a tool that is not installed. Core synthesis does not expose the lab's
+   call a tool that is not installed. `synthesize_speech` does not expose the audition tool’s
    Reasoning controls. Do not claim a Reasoning A/B experiment was performed.
 
 When `find_voices` is available:
@@ -97,7 +97,7 @@ renders, offer the host's file preview. Follow the tool's playback instructions.
 
 For contextual delivery, `compare_voices` accepts `reasoning: "on"` and optional
 `reasoning_context` (scene/character notes, at most 600 characters). This uses
-`inworld-tts-2` and requires workspace feature enablement; Flash does not support it.
+`inworld-tts-2`; Flash does not support it. Surface any availability error returned by the API.
 For a listening comparison, pass `compare_reasoning: true`, one or two discovered
 voice IDs, and the same unmodified app line. Omit `reasoning` in comparison mode.
 This makes two clips per voice with the same model, text and delivery setting
@@ -105,7 +105,7 @@ This makes two clips per voice with the same model, text and delivery setting
 
 Read each clip's `reasoningInstruction` and `requestDurationMs` and present the
 native players with the condition labels. Workspace-default is **not guaranteed
-Reasoning off**: opted-in workspaces can reason by default. An absent instruction
+Reasoning off**: the tool preserves the server default rather than sending an OFF enum. The current public API documents an unspecified request as not running Reasoning; label the comparison default/requested and report the response evidence. An absent instruction
 can mean abstention, fallback or no enablement; do not claim Reasoning ran.
 Request duration is complete HTTP synthesis time, not first audio or playback
 latency. Keep raw usage; do not infer a surcharge. Let the user judge delivery.

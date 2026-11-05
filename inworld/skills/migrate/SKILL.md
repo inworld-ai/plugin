@@ -33,8 +33,7 @@ For each call site, record: file and function, provider, mode (one-shot, HTTP st
 WebSocket), voice, model, output format and sample rate, extras used (timestamps,
 SSML, pronunciation dictionaries, voice settings), and the existing secret-injection mechanism (names/structure only, never values).
 
-Show the user this table and confirm the scope before editing anything. If nothing is
-found, say so and offer the `setup` skill instead.
+Summarize the inventory and preserve the migration scope already authorized. Ask only when the provider, affected feature or desired change remains ambiguous. If nothing is found, say so and offer the `setup` skill instead.
 
 ## Step 2 — Connect and pick voices
 

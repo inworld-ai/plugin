@@ -29,6 +29,16 @@ Use the host's plugin update/refresh flow. A Git-imported Cursor team marketplac
 
 For native Gemini, Copilot CLI, OpenClaw, Hermes, Qwen and Pi packages, follow the host's own update mechanism. Do not use the project updater to replace a native installation. Host login, cached packages and UI support vary; a package version does not establish live acceptance in every host.
 
+## Skills installer
+
+For skills installed with `npx skills add`, re-run the installation command from the same project:
+
+```sh
+npx skills add inworld-ai/plugin
+```
+
+Select the same Inworld skills, agents and scope as before. Preserve local skill edits before accepting replacement. This refreshes skill files, not an MCP server, native plugin or credentials. Do not also install a second copy through your host's plugin flow.
+
 ## Update a project integration
 
 The project updater applies only to integrations installed using `install-agent-project.mjs` with an ownership record. First generate a new package from an updated checkout, then run its installer with `--update`:
@@ -59,7 +69,7 @@ For a reproducible installation, select a published `vX.Y.Z` Git tag. That pin d
 
 ## Verify and recover
 
-Check the version displayed by your host or the installed package's `package.json`, then run the offline speech-text check from [installation](INSTALL.md#verify-and-troubleshoot). This proves local tool execution, not API authentication or audio quality. Keep existing credentials in the host's secret settings.
+Check the version displayed by your host or the installed package's `package.json`, then run the offline speech-text check from [installation](INSTALL.md#check-the-installation). This proves local tool execution, not API authentication or audio quality. Keep existing credentials in the host's secret settings.
 
 If a release is broken, use the previous tagged native package where the host supports selecting a version. For managed project copies, reconcile local changes before explicitly updating from the chosen previous package. Maintainers should restore the working payload in a new patch release rather than move a published tag.
 

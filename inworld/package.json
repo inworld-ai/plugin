@@ -1,6 +1,6 @@
 {
   "name": "inworld-agent-plugin",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
   "type": "module",
   "bin": {

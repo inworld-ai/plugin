@@ -1,159 +1,143 @@
-# Install the Inworld agent plugin
+# Install Inworld
 
-Requires **Node.js 20+**. Claude Code and Codex can install directly from the public Git marketplace below. For Cursor, generated packages or local development, clone the source first:
+Choose your coding agent below. Claude Code and Codex install directly from this Git repository. For skills without MCP tools, use the skills installer. Cursor and the other host adapters use a local checkout.
 
-```sh
-git clone https://github.com/inworld-ai/plugin.git
-cd plugin
-```
+The local tools require **Node.js 20+**. The Inworld API key is separate from your coding agent's own login. Official marketplace approval is not required for these direct installation routes.
 
-The bundled runtime needs no npm dependency installation. Official marketplace listings and direct installation are separate.
+- [Claude Code](#claude-code)
+- [Codex](#codex)
+- [Skills only](#skills-only)
+- [Cursor](#cursor)
+- [Other supported hosts](#other-supported-hosts)
+- [Check the installation](#check-the-installation)
+- [Updates](UPDATING.md)
 
 ## Claude Code
 
-Directly from the public Git marketplace (a local clone is optional for this route):
+Run in your terminal:
 
 ```sh
 claude plugin marketplace add inworld-ai/plugin
 claude plugin install inworld@inworld
 ```
 
-Configure the plugin's sensitive **Inworld API key** field. This registers the public Git marketplace for future refreshes. For a local development session instead, run `claude --plugin-dir ./inworld`.
+`inworld-ai/plugin` is the GitHub repository; `inworld@inworld` is the plugin name and its catalog name. This adds our repository as a source, not a listing in Anthropic's official marketplace.
+
+Configure **Inworld API key** in the plugin's sensitive configuration field, then start a new session. Choose user or project scope through the host as appropriate; do not change a team's configuration without intending to.
+
+For a temporary local-development session, clone the repo using [Local checkout](#local-checkout), then run `claude --plugin-dir ./inworld` from the checkout root. This reads that directory for the invocation rather than installing a Git-managed copy.
 
 ## Codex
+
+Run in your terminal:
 
 ```sh
 codex plugin marketplace add inworld-ai/plugin
 codex plugin add inworld@inworld
 ```
 
-Supply `INWORLD_API_KEY` through the approved launch environment. The manifest forwards only that named credential. Restart after changing the launch environment; a desktop app may not inherit terminal variables.
+The repository and plugin identifiers mean the same things as above. This is a direct Git installation, separate from OpenAI's public directory approval.
+
+The local launcher forwards `INWORLD_API_KEY` from the environment in which Codex starts. Configure it through your existing secret/launch setup and restart Codex. This plugin does not provide a Claude-style API-key dialog. A desktop app opened separately may not inherit a terminal's environment; do not assume setting a terminal variable configured the desktop app.
+
+## Skills only
+
+Run from the project where you want to use Inworld:
+
+```sh
+npx skills add inworld-ai/plugin
+```
+
+Choose your coding agent and the skills to install. This uses the [open skills installer](https://github.com/vercel-labs/skills), which requires Node.js 22.20+. Its default scope is the current project; select only the agents you intend to configure. Install all Inworld skills to retain links between related workflows.
+
+This installs skill instructions and their supporting scripts, not the Inworld MCP server or credential settings. Your agent can use them to build an integration in your app. For voice auditions and other authenticated plugin tools, use a native plugin installation or the matching host adapter below. Avoid installing the same skills through both routes in one host.
 
 ## Cursor
 
-From the checkout root, generate a new package beside it:
+1. Follow [Local checkout](#local-checkout) to prepare the `cursor` adapter.
+2. In Cursor IDE, choose **Customize > Plugins > Add > From Local Repository** and select the generated `inworld-cursor` directory. Select that directory, not this repository's root folder.
+3. Configure **Inworld API key** in the plugin's native configuration flow and start a new agent session.
 
-```sh
-node inworld/scripts/package-agents.mjs cursor ../inworld-cursor
-```
+Cursor IDE's native plugin and the Agents window's project integration are different installation routes. For the project route, follow the package README and [Project integration](#project-integration); seeing skills in the UI alone does not confirm MCP tool access.
 
-In Cursor IDE, open **Customize → Plugins → Add → From Local Repository** and select the generated `inworld-cursor` directory. Configure its **Inworld API key** variable through the native Configure flow. Expect one Inworld MCP connection and 24 skills.
+## Other supported hosts
 
-The Cursor Agents window uses the project integration route below. An installed skill list alone does not establish tool access there.
+Use the skills-only route above for integration guidance, or prepare a host adapter from a [local checkout](#local-checkout) for the components listed below. The adapter's README contains its installation commands and credential configuration.
 
-## Other harnesses
-
-Generate the selected package from the checkout root:
-
-```sh
-node inworld/scripts/package-agents.mjs gemini ../inworld-gemini
-```
-
-Replace `gemini` with your package ID below and choose a corresponding output directory. Directories must be new and their parents must exist. Follow the generated README for the host's complete setup. Package generation does not install software, configure credentials or make API requests.
-
-Native installation routes for generated packages:
-
-| Harness | Package ID | Install |
+| Host | Package ID | Route |
 | --- | --- | --- |
-| Gemini CLI | `gemini` | `gemini extensions install /absolute/path/to/package` |
-| GitHub Copilot CLI | `copilot-cli` | `copilot --plugin-dir /absolute/path/to/package` |
-| OpenClaw | `openclaw` | `openclaw plugins install /absolute/path/to/package`, then configure native MCP settings |
-| Hermes | `hermes` | Copy into the selected profile's `plugins/inworld-developer` directory only if absent, then explicitly enable in Hermes |
-| Qwen Code | `qwen` | `qwen extensions install /absolute/path/to/package` |
-| Pi | `pi` | `pi install --local /absolute/path/to/package`; skills and local checks only |
+| Gemini CLI | `gemini` | Native extension; Google model login is separate from the Inworld key |
+| GitHub Copilot CLI | `copilot-cli` | Native plugin |
+| OpenClaw | `openclaw` | Native plugin plus native MCP configuration |
+| Hermes | `hermes` | Native plugin in the selected profile; no project installer |
+| Qwen Code | `qwen` | Native extension |
+| Pi | `pi` | Native skills package; no authenticated MCP tools |
+| Goose | `goose` | Project skills plus the package's explicit recipe |
+| Google Antigravity | `antigravity` | Project integration |
+| GitHub Copilot in VS Code | `copilot` | Project skills and workspace MCP configuration |
+| OpenCode | `opencode` | Project integration; JSONC requires manual merging |
+| Amp | `amp` | Project integration; review workspace MCP trust |
+| Factory Droid | `droid` | Project integration |
+| Kiro IDE and CLI V3 | `kiro` | Project integration |
+| Junie CLI / JetBrains Air | `junie` | Project integration |
+| Roo Code | `roo` | Project integration |
+| Cline | `cline` | Project skills; optional native MCP setup is manual |
+| Continue IDE and CLI | `continue` | Project skills; merge native MCP settings manually |
+| Kimi Code CLI | `kimi` | Project skills and explicit native MCP configuration |
+| Windsurf / Devin Desktop | `windsurf` | Project skills and manual native MCP setup |
+| Zed | `zed` | Project skills and manual native MCP setup |
+| Other Agent Skills-compatible hosts | `agents` | Skills and local checks; no native MCP configuration |
 
-Goose uses project skills plus an explicit recipe. Review the recipe and configure its declared credential in Goose's secret settings, then run:
+Package availability does not mean every host has passed live API, audio and native UI acceptance. Follow the selected package's documented route rather than another agent's secret syntax.
+
+### Project integration
+
+Only use this route when the selected package's README calls for it. Run its installer against an existing project:
 
 ```sh
-goose run --recipe /absolute/path/to/package/goose-recipe.json --params package_root=/absolute/path/to/package
+node /absolute/path/to/host-adapter/scripts/install-agent-project.mjs --project /absolute/path/to/project
 ```
 
-OpenClaw's native MCP settings resolve credentials differently from its portable bundle. From its generated package:
+Replace both example paths with your actual directories. The installer copies the Inworld runtime and skills and, where supported, adds project MCP settings while preserving unrelated servers. A fresh installation refuses existing Inworld destinations. It does not edit global settings or store API-key values. For an existing installation, use [the update guide](UPDATING.md).
 
-```sh
-node scripts/prepare-agent-mcp.mjs /absolute/path/to/new-native-mcp.json
-```
+Some hosts require a manual MCP configuration step after installation. Use the package's `prepare-agent-mcp.mjs` helper only as described in its README. Do not paste a generated snippet into another host's configuration.
 
-Review and apply only its `mcp.servers` entries through the Control UI's `/settings/mcp` flow, preserving other servers. Supply the referenced credential through host-approved secret/environment settings. Do not stop a running Gateway automatically: CLI mutations/probes and the Control UI have different Gateway-state requirements.
+## API key
 
-## Project integration
+[Create an account](https://platform.inworld.ai/signup?utm_source=other-agent&utm_medium=agent-plugin&utm_campaign=inworld-plugin&utm_content=readme) or [get your API key](https://platform.inworld.ai/api-keys?utm_source=other-agent&utm_medium=agent-plugin&utm_campaign=inworld-plugin&utm_content=readme), then configure it through the selected host's credential route. Keep the value out of chat, command arguments and version control.
 
-For a project adapter or skills pack, run the explicit installer from its generated package:
+This release uses API keys. It does not provide native MCP OAuth or automatically import a CLI login. The terminal bridge supports discovery and the offline `check_speech_text` tool; it does not forward shell credentials for paid API calls. Skills-only packages can still help implement the APIs in your app.
 
-```sh
-node /absolute/path/to/package/scripts/install-agent-project.mjs --project /absolute/path/to/existing-project
-```
+## Check the installation
 
-It adds Inworld skills and a local runtime copy to the requested project. Where supported, it adds an MCP definition while preserving unrelated servers. It refuses existing Inworld destinations and conflicting configurations instead of overwriting them. It does not edit global settings or store credentials. Hermes requires native installation instead.
+1. Start a new agent session. Confirm Inworld skills are available. Hosts configured for native MCP should have one `inworld` connection with 28 tools; skills-only packages do not have that connection.
+2. With native MCP configured, ask: “Check this sentence for speech: Your reference is AB12.” The local check needs no API key and makes no paid request. For a skills-only install, instead ask the agent to find the Inworld workflow for your task; that route does not add this MCP tool.
+3. When you want to try the API, ask for a short speech generation or another specific operation. A local check does not prove API authentication, audio playback or recognition quality.
 
-### Supported harnesses
+If a host login fails, resolve that login separately. Reinstalling Inworld will not fix Google or another host's account eligibility. For a missing key, check the selected host's configuration and restart after launch-environment changes. Generate adapters into a new directory rather than deleting an installation.
 
-Claude Code and Codex use the routes above. Every additional named target is listed here. Package availability does not establish that native UI, audio or authenticated workflows have passed in every host.
-
-| Harness | Package ID | Installation and credentials |
-| --- | --- | --- |
-| Cursor | `cursor` | Native plugin variables in IDE; project MCP settings for the Agents window |
-| Gemini CLI | `gemini` | Native extension with sensitive API-key setting; Google model login is separate |
-| GitHub Copilot CLI | `copilot-cli` | Native plugin; explicitly configure its MCP credential in the host |
-| OpenClaw | `openclaw` | Native bundle plus native MCP settings; see above |
-| Hermes | `hermes` | Native plugin and host-approved MCP credential; no project installation |
-| Qwen Code | `qwen` | Native plugin and host-approved MCP credential |
-| Goose | `goose` | Project skills and explicit recipe with declared credential names |
-| Pi | `pi` | Native skills package; app credentials belong in the app being built |
-| Google Antigravity | `antigravity` | Project `.agents/skills` and `.agents/mcp_config.json` |
-| GitHub Copilot in VS Code | `copilot` | Project `.github/skills` and `.vscode/mcp.json`; review MCP trust |
-| OpenCode | `opencode` | Project `.opencode/skills` and `opencode.json`; existing JSONC requires manual merge |
-| Amp | `amp` | Project `.agents/skills` and `.amp/settings.json`; workspace MCP trust required |
-| Factory Droid | `droid` | Project `.factory/skills` and `.factory/mcp.json` |
-| Kiro IDE and CLI V3 | `kiro` | Project `.kiro/skills` and `.kiro/settings/mcp.json` |
-| Junie CLI / JetBrains Air | `junie` | Project `.junie/skills` and `.junie/mcp/mcp.json` |
-| Roo Code | `roo` | Project `.roo/skills` and `.roo/mcp.json` |
-| Cline | `cline` | Project `.cline/skills`; configure optional native MCP through Cline |
-| Continue IDE and CLI | `continue` | Project `.continue/skills`; manually merge generated MCP list into host YAML settings |
-| Kimi Code CLI | `kimi` | Project `.agents/skills`; explicit private MCP config file and host launch environment |
-| Windsurf / Devin Desktop | `windsurf` | Targets `.devin/skills`; legacy Windsurf directories are not assumed; native MCP setup is manual |
-| Zed | `zed` | Project `.agents/skills`; manually merge generated `context_servers` snippet through approved settings |
-
-For another Agent Skills-compatible host, use package ID `agents`. This fallback supplies skills and local checks; it does not add native MCP support.
-
-Where native MCP configuration is manual, `prepare-agent-mcp.mjs` writes a new snippet with absolute paths and no secret values. Empty `INWORLD_API_KEY` overrides intentionally prevent ambient credential inheritance; exporting a key does not override an explicit empty value. Follow the generated README for the selected host, rather than another host's credential syntax.
-
-## Runtime-only setup
-
-For an MCP-capable host without a plugin installer, configure one local stdio
-server running `node /absolute/path/to/checkout/inworld/launcher.mjs`, with the
-Inworld API key supplied through the host's approved secret settings. This adds
-the tools; it does not install the skills. The generated host snippets provide
-the appropriate configuration shape.
-
-You can also install a local runtime package with
-`npm install /absolute/path/to/checkout/inworld`, or install a prepared npm
-tarball. Its `inworld-agent-plugin` launcher starts the same stdio runtime.
-Installing the npm package does not register a plugin, skills or MCP settings
-in an agent. This release candidate has not been published to the npm registry;
-do not assume an unqualified registry install command selects this build.
-
-`npm run` commands execute the scripts in the current directory's
-`package.json`; they are not package-registry links. Repository maintenance
-commands live at the checkout root. The installable runtime package exposes
-only `npm start`.
-
-## Credentials
-
-[Create an Inworld account](https://platform.inworld.ai/signup?utm_source=other-agent&utm_medium=agent-plugin&utm_campaign=inworld-plugin&utm_content=readme) or [get your API key](https://platform.inworld.ai/api-keys?utm_source=other-agent&utm_medium=agent-plugin&utm_campaign=inworld-plugin&utm_content=readme). Use the selected host's approved secret settings. Never paste keys into chat, command arguments or shared project configuration. This release uses API keys; it does not provide native MCP OAuth sign-in or import a CLI login.
-
-The terminal bridge supports discovery and the offline `check_speech_text` tool. It never forwards shell credentials or substitutes for authenticated native MCP. Skills-only installations can still help implement Inworld APIs in your app.
-
-## Verify and troubleshoot
-
-1. Confirm the host loaded Inworld skills and, for native tools, one `inworld` MCP connection with 28 tools.
-2. Ask: “Check this sentence for speech: Your reference is AB12.” This local check needs no key or paid request.
-3. Configure credentials separately. Discovery and offline checks do not prove authentication. Generate speech or upload audio only when you intend that action.
-
-If Node is missing, install Node.js 20+ using your usual package manager. If a key is missing, check the host's credential field and restart after environment changes. If a package output exists, choose a new directory rather than deleting an existing integration.
-
-Gemini's Google account eligibility and billing are separate from Inworld credentials. A host login error is not fixed by reinstalling this plugin. Audio controls also vary by host; use the supported file playback route when inline controls are unavailable.
+Audio controls depend on the host. Follow the tool's file/playback instructions instead of assuming every agent renders a play button.
 
 ## Updates
 
-See [the update guide](UPDATING.md) for native marketplace refreshes, local packages and managed project updates. Project installations made with this release record ownership and support explicit `--update`; earlier untracked installs require manual migration. Credentials, host configuration and locally edited files are preserved.
+Follow [Update Inworld](UPDATING.md) for your installation route. Updating a Git checkout does not update copies already installed into another project or host cache.
+
+## Local checkout
+
+For Cursor and other host adapters, clone the repository and prepare the directory your host expects. No dependency installation is needed:
+
+```sh
+git clone https://github.com/inworld-ai/plugin.git
+cd plugin
+node inworld/scripts/package-agents.mjs cursor ../inworld-cursor
+```
+
+Replace `cursor` with a package ID from the table and choose a new output directory whose parent exists. Follow the generated directory's README to install it in your host. Preparing an adapter does not install anything or make API requests.
+
+For local development, Claude Code can load `./inworld` directly. Standalone Claude and Codex directories can also be prepared with `node inworld/scripts/package-plugin.mjs claude ../inworld-claude` or `codex` with its own new destination.
+
+### Runtime without skills
+
+For a host that supports MCP but not plugins, configure one stdio server running `node /absolute/path/to/checkout/inworld/launcher.mjs`, with credentials supplied by the host's secret settings. This adds the tools only, not the skills.
+
+A local `npm install /absolute/path/to/checkout/inworld` installs that runtime package; it does not register a plugin or host configuration. This plugin is not published on the npm registry. Repository `npm run` commands execute local maintenance scripts; the installable runtime package exposes only `npm start`.

@@ -7,8 +7,6 @@ description: "Set up Inworld voice APIs in a project. Use for a first speech int
 
 Wire Inworld AI speech APIs into the current project end-to-end. Detects the user's stack, adds the right dependencies and env vars, scaffolds a reusable TTS-2 client and working example; delegates recorded and live STT to their dedicated workflows before scaffolding. Use when the user wants to add Inworld voice features to a project for the first time, or asks to add text-to-speech, speech-to-text, or a voice to their app without naming a provider.
 
-Wire Inworld's speech APIs into the user's project.
-
 Route STT before any access check or scaffold: use
 [add-transcription](../add-transcription/SKILL.md) for recorded files, including
 short clips, long jobs and speaker labels; use
@@ -129,7 +127,7 @@ export async function synthesize(opts: SynthesizeOptions): Promise<Buffer> {
 ```
 
 For Next.js, also create `app/api/tts/route.ts` (or `pages/api/tts.ts`) that wraps
-`synthesize` and streams the buffer back as `audio/mpeg`.
+`synthesize` and returns the completed MP3 buffer as `audio/mpeg`. This route is buffered, not incremental synthesis; use add-streaming-tts when playback must start earlier.
 
 ### Python
 
@@ -173,7 +171,7 @@ def synthesize(
     return base64.b64decode(r.json()["audioContent"])
 ```
 
-For FastAPI, add a `/tts` route that returns `Response(content=synthesize(...), media_type="audio/mpeg")`.
+For FastAPI, an MP3 route can return `Response(content=synthesize(...), media_type="audio/mpeg")`. If selecting another encoding, set its matching content type instead.
 
 ## Step 4 — Env vars
 
@@ -204,21 +202,9 @@ Additional text features to mention in the helper module's docstring:
   `a honeymoon in /kriːt/`, for proper nouns TTS would otherwise mispronounce
 - **Verbatim**: `<verbatim>AHAA7771Z</verbatim>` spells out codes and IDs
 - **Long text**: 2,000 character limit per call. For longer text, split at sentence
-  boundaries client-side and concatenate the resulting audio (MP3 concatenation works;
-  PCM/WAV needs header handling), or use Inworld's async synthesis (preview, up to
-  100,000 characters as one background job)
+  boundaries and use container-aware audio merging, or use [async synthesis](https://docs.inworld.ai/tts/synthesize-speech). Async limits depend on the account: On-Demand jobs are capped at 10,000 characters; other supported accounts can submit up to 100,000. Do not assume upload acceptance or raw MP3 byte concatenation proves a correctly finalized recording.
 
-If the user wants their own custom voices (instead of the public library):
-- **Instant cloning**: the `clone_voice` MCP tool. Recommend 15–30 seconds of clean,
-  single-speaker audio in the language the voice will speak; longer samples (up to
-  the 30-second limit) give better similarity.
-- **Voice design**: `design_voice` generates previews from a text description, then
-  `publish_voice` keeps the one they pick.
-- **Professional cloning (beta)**: for a production voice that must closely match a
-  real speaker, recommend Professional Voice Cloning: at least 10 minutes of clean
-  audio (up to 50 samples), fully supported in English, trained in the Inworld
-  Portal (TTS Playground → Create Voice → Professional Clone) or with the PVC API.
-  Voice slots and training rate depend on their plan.
+For a real speaker clone, follow [custom-voice](../custom-voice/SKILL.md), which distinguishes instant and professional cloning, Portal/API/tool limits, consent, sample preparation and resumable training. For a new designed voice, use [find-voice](../find-voice/SKILL.md) to audition candidates before publishing. Do not duplicate those limits in this setup helper or publish a voice merely to preview it.
 
 For every STT request, use `add-transcription` for recordings or
 `add-streaming-stt` for live audio. They select vocabulary, timestamps, diarization,
@@ -228,7 +214,7 @@ assume one clean generated clip proves real-world recognition quality.
 
 ## Step 6 — Prove it works
 
-For TTS requests, use `synthesize_speech` to generate a 3-second test clip (e.g. "Hello from Inworld.")
+For TTS requests, use `synthesize_speech` to generate a short test clip (e.g. "Hello from Inworld.")
 into a temp file. Tell the user the path. If they asked for STT, offer to
 transcribe an audio file they provide.
 

@@ -18,7 +18,7 @@ Inworld's Realtime API runs a low-latency speech-to-speech loop:
 microphone → STT → LLM (router) → TTS-2 → speakers. It follows the OpenAI
 Realtime protocol, so most messages will look familiar.
 
-The plugin's MCP server is for batch TTS/STT. Realtime audio cannot live in
+The plugin's speech tools generate or transcribe files. Realtime audio cannot live in
 the agent's MCP process — it must live in the user's app. This skill writes that code.
 
 ## Migrating from OpenAI Realtime?
@@ -34,7 +34,7 @@ this is a near-drop-in swap:
 | Browser auth  | Ephemeral token | Backend-minted session token (`Authorization: Bearer <token>`) |
 | `session.update` model | OpenAI model ids | Any provider model (`openai/...`, `anthropic/...`) or an Inworld Router (`inworld/<name>`) |
 | TTS voice     | OpenAI voices (alloy, echo, ...) | Inworld TTS-2 voices (run `list_voices`) |
-| Message schema| Same | Same |
+| Message schema | OpenAI Realtime events | Compatible events; verify supported fields and behavior |
 
 If the app already uses OpenAI Realtime, preserve its existing event handling and
 verify differences against the installed client and current Inworld docs. Use
@@ -366,7 +366,7 @@ a real phone call must still verify codec negotiation, barge-in and disconnects.
 
 ## Step 6 — Pick a voice, an LLM, and a system prompt
 
-Ask the user three things:
+Infer these choices from the project and conversation. Ask only for a missing decision:
 
 1. **Agent purpose** (customer support, game NPC, language tutor, etc.) — this
    shapes the system prompt.
