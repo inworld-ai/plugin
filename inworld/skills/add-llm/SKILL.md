@@ -113,6 +113,7 @@ client = OpenAI(
 const client = new Anthropic({
   baseURL: "https://api.inworld.ai",
   apiKey: null,
+  maxRetries: 0,
   authToken: process.env.INWORLD_API_KEY,
   defaultHeaders: { Authorization: `Basic ${process.env.INWORLD_API_KEY}` },
 });
@@ -122,6 +123,7 @@ const client = new Anthropic({
 client = anthropic.Anthropic(
     base_url="https://api.inworld.ai",
     api_key=None,
+    max_retries=0,
     auth_token=os.environ["INWORLD_API_KEY"],
     default_headers={"Authorization": f"Basic {os.environ['INWORLD_API_KEY']}", "X-Api-Key": anthropic.omit},
 )

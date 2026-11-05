@@ -2,7 +2,7 @@
 
 Sources: the public [custom pronunciations guide](https://docs.inworld.ai/tts/capabilities/pronunciation-dictionaries) and method references below. These are documented contracts, not evidence of a live API test. Creating, editing or deleting dictionaries requires the user's authorization; synthesis can incur charges.
 
-## Management shapes verified in the supplied source
+## Dictionary management
 
 Same regional base for management and synthesis. Authentication is
 `Authorization: Basic $INWORLD_API_KEY` with the copied key unchanged.
@@ -18,15 +18,14 @@ and `resource = /pronunciations/v1/{full-returned-name}`.
 | Replace entries | PATCH resource | Query `updateMask=pronunciations`; JSON complete `pronunciations`, current `etag` |
 | Delete | DELETE resource | Query current `etag`; optional `allowMissing=true` still requires nonempty ETag |
 
-The guide does not show the exact list array field or pagination request schema.
-Consult [List](https://docs.inworld.ai/api-reference/pronunciationAPI/pronunciations/list-pronunciation-dictionaries)
-before implementing a paginator; the helper deliberately has none. Other method
+List responses use `pronunciationDictionaries` and `nextPageToken`. Continue with the same workspace and the opaque `pageToken`; `pageSize` is capped at five. Consult [List](https://docs.inworld.ai/api-reference/pronunciationAPI/pronunciations/list-pronunciation-dictionaries)
+for the full contract; the local planning helper does not perform API pagination. Other method
 references: [Create](https://docs.inworld.ai/api-reference/pronunciationAPI/pronunciations/create-pronunciation-dictionary),
 [Update](https://docs.inworld.ai/api-reference/pronunciationAPI/pronunciations/update-pronunciation-dictionary),
 [Delete](https://docs.inworld.ai/api-reference/pronunciationAPI/pronunciations/delete-pronunciation-dictionary).
 Do not invent per-entry CRUD, import, batch management, or validation methods.
 
-Create example (tested subset in the primary guide, not a complete phone inventory):
+Create example (not a complete phone inventory or a live API test):
 
 ```json
 {"displayName":"Project terms","pronunciations":[{"displayHeadword":"Cat","languageCode":"en-US","phoneSymbols":["k","æ","t"]}]}

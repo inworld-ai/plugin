@@ -166,10 +166,3 @@ Audition the ready voice on held-out recordings and new app utterances with the
 same output configuration. Compare similarity, pronunciation, artifacts and
 consistency. Keep [test-voice](../../test-voice/SKILL.md) records. A successful
 upload or a short convincing IVC preview does not demonstrate PVC readiness.
-
-## Implementation notes
-
-The plugin includes a general workflow and synthetic tests; no private
-recordings, speaker identities, consent records, app-specific model calls or
-person-specific duration targets are bundled. Service lifecycle/limits remain
-subject to the current primary docs linked in the other custom-voice references.

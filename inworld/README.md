@@ -1,5 +1,7 @@
 # Inworld AI
 
+[Installation guide](https://github.com/inworld-ai/plugin/blob/main/INSTALL.md) · [Updates](https://github.com/inworld-ai/plugin/blob/main/UPDATING.md)
+
 Build and test voice and AI experiences inside your coding agent. Describe the voice you want, audition it on your own script, and integrate natural speech into your app. Transcribe recordings or live audio, tune pronunciation and alphanumeric delivery, or prepare a consenting speaker's recordings for voice cloning.
 
 Evaluate Inworld inference on your app's real requests, comparing latency, cost and quality before choosing a model. Configure model routing and fallbacks, or generate images and videos through the same Inworld connection.

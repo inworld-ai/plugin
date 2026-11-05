@@ -10,7 +10,7 @@
       "name": "inworld",
       "source": "./inworld",
       "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
-      "version": "1.0.0",
+      "version": "1.0.1",
       "category": "ai",
       "keywords": [
         "tts",

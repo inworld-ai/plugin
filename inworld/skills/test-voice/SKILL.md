@@ -53,7 +53,7 @@ For a contextual TTS Reasoning experiment, follow
 requested mode, optional context, workspace default and returned instruction in
 the run settings/evidence. Compare the same voice, model, text and delivery mode;
 workspace-default is not a guaranteed off condition. Keep a real human listening
-verdict separate from generation success and request duration. The lab's
+verdict separate from generation success and request duration. The plugin's
 `compare_reasoning` audition can prepare these clips, but does not prove the
 app's full transport or every fixture setting was exercised.
 

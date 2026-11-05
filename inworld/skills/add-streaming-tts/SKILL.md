@@ -40,8 +40,7 @@ inline `[laugh]`, etc.
 
 For contextual delivery, HTTP supports TTS Reasoning via `reasoning: "on"`,
 optional `reasoningContext` (600 characters max), and
-`onReasoningInstruction(instruction)`. Use `inworld-tts-2`; workspace enablement is
-required. Preserve delivery settings unless the user requests a change. Capture
+`onReasoningInstruction(instruction)`. Use `inworld-tts-2`; if the API reports the feature unavailable, surface that result rather than retrying with invented fields. Preserve delivery settings unless the user requests a change. Capture
 instruction-only first records. WebSocket duplex does not run Reasoning; do not
 pass it there or promise the same feature on both transports. See
 [Reasoning integration notes](../find-voice/references/tts-reasoning.md) for defaults,
@@ -112,8 +111,7 @@ Use `await open()` to obtain a context, then `await speak(id, text, flush?)`,
 `await flush(id)` or `await closeContext(id)`. `closeContext` is a graceful finish
 and synthesizes buffered text. **Barge-in calls `cancel()`**, which suppresses old
 audio, clears playback and closes this dedicated socket without sending a flush.
-Create a fresh client for the next utterance. Cancellation affects all contexts on
-that socket; the documented API has no per-context cancellation message. Nonzero
+Create a fresh client for the next utterance. This helper cancels all contexts on its dedicated socket. The API also documents `cancel_context`, but this helper does not expose a per-context cancel method; do not invent one on the wrapper. Nonzero
 response status invokes `onError` and never the successful completion callback.
 
 The client creates each context with `auto_mode: true` and

@@ -30,8 +30,7 @@ their choice. A visit or login is not evidence of a new account. Cursor’s nati
 comes from this skill and the package README. Other hosts vary. Installation is not permission to generate, publish, upload or migrate.
 
 The plugin exposes one `inworld` connection with its complete supported toolset.
-Configure only `INWORLD_API_KEY`; no second lab key or feature-area package is
-required. Tool availability does not authorize paid calls or writes.
+Configure `INWORLD_API_KEY` for that connection. Tool availability does not authorize paid calls or writes.
 
 Claude Code uses the plugin's sensitive API-key field. Codex local execution
 forwards the named `INWORLD_API_KEY` from the launcher’s explicit environment;

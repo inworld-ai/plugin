@@ -31,5 +31,4 @@ Official sources (reviewed **2026-10-17**):
   — usable without an API key.
 
 The image guide links the [Chat Completions reference](https://docs.inworld.ai/api-reference/routerAPI/chat-completions.md)
-for additional settings. Consult it before using options not covered here;
-its full schema was not part of the reviewed snapshots.
+for additional settings. Check the selected model and installed tool schema before using an option not covered here; an API parameter is not necessarily exposed by this plugin tool.

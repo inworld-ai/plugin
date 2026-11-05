@@ -1,7 +1,7 @@
 {
   "name": "inworld",
   "displayName": "Inworld AI",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "Find voices, generate speech, transcribe audio and benchmark AI models with Inworld.",
   "author": {
     "name": "Inworld AI",

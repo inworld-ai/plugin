@@ -25,14 +25,16 @@ in an experiment without labeling that condition.
 
 The response's `reasoningInstruction` reports the instruction applied. On HTTP
 streams, capture it from the first response message even if that message has no
-audio. Read through EOF and preserve trailing errors. An absent instruction does
-not distinguish abstention, workspace enablement, timeout or fallback.
+audio. Read through EOF and preserve trailing errors. An absent instruction alone
+does not distinguish Reasoning not running from running without producing an
+instruction; report any errors separately.
 
-`REASONING_UNSPECIFIED`/omission preserves workspace policy, which can opt in to
-Reasoning by default. There is no documented OFF enum; never invent one. For a
-controlled off/on study, verify the workspace default is off before interpreting
-the baseline as off. Otherwise label it default/requested and report that limit.
+The public API defines `REASONING_UNSPECIFIED`/omission as not running Reasoning.
+There is no documented OFF enum; never invent one. The plugin's default condition
+leaves the field unset. Keep the default/requested labels and distinguish that
+request setting from verified execution. Do not assert an undocumented workspace
+opt-in or describe a controlled off/on study without establishing the baseline.
 
 Delivery mode and Reasoning are separate controls. The audition tool defaults Reasoning comparisons to CREATIVE for both conditions; callers can explicitly select another supported delivery mode. Keep that setting fixed when comparing clips rather than treating variation as a Reasoning effect. Use the public model ID `inworld-tts-2`; Flash is unsupported. Report API rejection without automatically retrying a paid request.
 
-Sources: [synchronous synthesis](https://docs.inworld.ai/api-reference/ttsAPI/texttospeech/synthesize-speech), [HTTP streaming synthesis](https://docs.inworld.ai/api-reference/ttsAPI/texttospeech/synthesize-speech-stream). The public reference describes `REASONING_UNSPECIFIED` as not running Reasoning. The plugin's omitted/default setting is not an explicit OFF control; preserve server behavior and report returned evidence rather than promising an off/on experiment.
+Sources: [synchronous synthesis](https://docs.inworld.ai/api-reference/ttsAPI/texttospeech/synthesize-speech), [HTTP streaming synthesis](https://docs.inworld.ai/api-reference/ttsAPI/texttospeech/synthesize-speech-stream).

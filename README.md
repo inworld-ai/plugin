@@ -4,37 +4,13 @@
 
 Build, hear and test voice and AI experiences inside your coding agent. Find a voice for your app, transcribe audio, benchmark inference on your own workload, and integrate the result.
 
-24 skills and one MCP connection with 28 tools. Works across Claude Code, Codex, Cursor and [other supported harnesses](INSTALL.md#supported-harnesses), with native packages, project adapters or skills-only support depending on the host.
+24 skills and one MCP connection with 28 tools. Works across Claude Code, Codex, Cursor and [other supported harnesses](INSTALL.md#other-supported-hosts), with native packages, project adapters or skills-only support depending on the host.
 
 ## Install
 
-Requires **Node.js 20+**. Install directly from the public Git repository below; official marketplace approval is separate. The [installation guide](INSTALL.md) includes local-checkout and generated-package routes.
+Follow the [installation guide for your host](INSTALL.md). Requires Node.js 20+.
 
-### Claude Code
-
-Install directly from the public Git repository:
-
-```sh
-claude plugin marketplace add inworld-ai/plugin
-claude plugin install inworld@inworld
-```
-
-Configure the **Inworld API key** in the plugin's sensitive credential field.
-
-### Codex
-
-```sh
-codex plugin marketplace add inworld-ai/plugin
-codex plugin add inworld@inworld
-```
-
-The package forwards the explicitly configured `INWORLD_API_KEY` from Codex's launch environment. Desktop apps may not share your terminal environment. See [credentials](INSTALL.md#credentials).
-
-### Cursor and other harnesses
-
-Follow the [installation guide](INSTALL.md) for your host. This source distribution includes package generators; Cursor and the other adapters currently require a generated host package. The guide lists the commands and credential route for each target.
-
-Installing through another agent? Give it [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md).
+Installing through your coding agent? Give it [INSTALL_FOR_AGENTS.md](INSTALL_FOR_AGENTS.md).
 
 ## Try it
 
@@ -82,3 +58,5 @@ Installation does not authorize generation, uploads, training, publishing or pro
 ## Releases and updates
 
 See [release notes](CHANGELOG.md) and [updating](UPDATING.md). All harness packages share one plugin version; the bundled CLI is pinned independently. Git tags identify reproducible releases. Marketplace refresh, local package replacement and project updates use different paths.
+
+For repository maintenance and the file layout, see [release policy](RELEASING.md).

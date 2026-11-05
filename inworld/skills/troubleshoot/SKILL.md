@@ -76,9 +76,9 @@ Fast local checks that resolve a large share of issues:
   extra encoding, no `Bearer`. A 403 requires permission/workspace diagnosis,
   not an assumption of invalid credentials; use `connect` for missing/revoked
   credentials or the specific auth guidance needed.
-- **Silent no-effect params**: the API ignores unknown fields and invalid enum
-  values (HTTP 200, no error). If a parameter "does nothing," verify the exact
-  field name and enum against docs — e.g. delivery mode is
+- **Silent no-effect params**: some unsupported fields may be ignored, while invalid
+  values in validated fields can return an error. If a parameter "does nothing,"
+  inspect the response and verify the exact field name and enum against docs — e.g. delivery mode is
   `deliveryMode: STABLE | BALANCED | CREATIVE` (there is no EXPRESSIVE).
 - **Voice not found**: voice IDs are case-sensitive; custom voices are
   workspace-prefixed. Verify with `list_voices` (use `description_match`, not
@@ -89,16 +89,13 @@ Fast local checks that resolve a large share of issues:
   8,000–48,000 Hz; declare the actual capture rate in `sampleRateHertz`
   (48 kHz is valid). Do not label 48 kHz samples as 16 kHz; resample only
   when needed. See [streaming audio capture](https://docs.inworld.ai/api-reference/sttAPI/speechtotext/transcribe-stream-websocket).
-  Batch accepts MP3/WAV/FLAC/OGG with `AUTO_DETECT`. Use Inworld's model,
+  Synchronous file transcription accepts MP3/WAV/FLAC/OGG with `AUTO_DETECT`. Use Inworld's model,
   `inworld/inworld-stt-1` (30 languages); when reproducing with
   `transcribe_audio`, pass `model_id: "inworld/inworld-stt-1"` explicitly.
-- **TTS text limit**: 2,000 chars per synthesize call — split longer text at
-  sentence boundaries, or use async synthesis (preview, up to 100,000 chars).
+- **TTS text limit**: the synchronous endpoint accepts 2,000 UTF-16 code units; HTTP streaming accepts 4,000. For longer content, check the [async synthesis limits](https://docs.inworld.ai/tts/synthesize-speech), including the lower On-Demand account limit, before choosing a job or client-side chunking.
 - **Clone doesn't sound like the speaker**: instant cloning needs 15–30 seconds
   of clean, single-speaker audio in the target language (samples are trimmed at
-  30 s; voices cloned before Aug 15, 2026 used a 15 s prompt, so re-clone those).
-  For a closer, more stable match, Professional Voice Cloning (beta) trains on
-  10+ minutes of audio.
+  30 s). Evaluate an older clone before proposing a replacement; do not silently re-clone or delete it. Follow [custom-voice](../custom-voice/SKILL.md) for sample limits, professional cloning and continuation of an existing voice.
 - **Pronunciation tags read oddly**: custom pronunciation is English IPA in
   slashes around one word (`/kriːt/`), not SSML `<phoneme>`. For codes and IDs,
   use `<verbatim>…</verbatim>`.
